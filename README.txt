@@ -34,7 +34,7 @@ This is a Book Management application built using ASP.NET Core MVC and .NET 8. T
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/xisxus/Book-Management-Project.git
+   git clone https://github.com/shohana-howlader/Book-Management-Project.git
    ```
 
 2. Navigate to the project directory and open it in Visual Studio.
