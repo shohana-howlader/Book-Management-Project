@@ -1,0 +1,436 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<project.Models.ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Books Webs</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/css/nouislider.min.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+
+    <!-- Custom stylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/css/style.css" />
+
+    <link href="~/css/singlepage.css" rel="stylesheet" />
+
+    <!-- Custom CSS for Login and Registration Modals -->
+    <style>
+        /* Modal content styling */
+        .modal-content {
+            padding: 20px;
+        }
+
+        /* Button styles inside modals */
+        .modal-body .btn-primary {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Close button styling */
+        .modal-header .close {
+            font-size: 1.5rem;
+        }
+
+        /* Additional styling if needed */
+        .modal-title {
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        /* For mobile responsiveness */
+        media (max-width: 576px) {
+            .modal-dialog {
+                margin: 1.75rem auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <!-- TOP HEADER -->
+        <div id="top-header">
+            <div class="container">
+                <ul class="header-links pull-left">
+                    <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                    <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                </ul>
+                <ul class="header-links pull-right">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li >
+                            <form method="post" asp-controller="Account" asp-action="Logout" >
+                                <button type="submit" class="btn btn-link">Logout @User.Identity.Name</button>
+                            </form>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#editProfileModal"><i class="fa fa-user-o"></i>Edit Profile</a>
+                        </li>
+                       @*  <li>
+                            <a href="#" data-toggle="modal" data-target="#viewProfileModal"><i class="fa fa-user-o"></i>Register</a>
+                        </li> *@
+                        
+                       
+                    }
+                    else
+                    {
+                        <li >
+                            <a href="#" data-toggle="modal" data-target="#loginModal"><i class="fa fa-user-o"></i>Login</a>
+                        </li>
+                        <li >
+                            <a href="#" data-toggle="modal" data-target="#registrationModal"><i class="fa fa-user-o"></i>Register</a>
+                           
+                        </li>
+                    }
+                   
+                </ul>
+            </div>
+        </div>
+        <!-- /TOP HEADER -->
+
+        <!-- MAIN HEADER -->
+        <div id="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="header-logo">
+                            <a href="#" class="logo">
+                                <img src="~/img/logo.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="header-search">
+                            <form asp-controller="Home" asp-action="Search" method="get">
+                                <select class="input-select" name="genre">
+                                    <option value="">All Genres</option>
+                                    @if (ViewBag.Genres != null)
+                                    {
+                                        foreach (var genre in ViewBag.Genres as IEnumerable<string>)
+                                        {
+                                            <option value="@genre">@genre</option>
+                                        }
+                                    }
+                                </select>
+                                <input class="input" placeholder="Search here" name="query">
+                                <button type="submit" class="search-btn">Search</button>
+                            </form>
+                        </div>
+
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+        <!-- /MAIN HEADER -->
+    </header>
+    <!-- /HEADER -->
+
+    <!-- NAVIGATION -->
+    <nav id="navigation">
+        <div class="container">
+            <div id="responsive-nav">
+                <ul class="main-nav nav navbar-nav">
+                    <li class="active"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <li><a href="@Url.Action("Index", "Books")">Books</a></li>
+                        <li><a href="@Url.Action("UsersWithRoles", "Account")">Users</a></li>
+                        <li><a href="@Url.Action("AssignRole", "Account")">Assign-Role</a></li>
+                    }
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                         <li><a href="@Url.Action("IndividualIndex", "Books")">YourBooks</a></li>
+                    }
+
+                    <li><a href="@Url.Action("BookShowcase", "Books")">All-Books</a></li>
+                   
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- /NAVIGATION -->
+
+    <!-- Main Content -->
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+   
+   
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                  @*   @await Html.PartialAsync("_LoginPartial") *@
+                    @await Html.PartialAsync("_LoginPartial", new project.Models.ViewModels.LoginViewModel())
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel">Register</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   @*  @await Html.PartialAsync("_RegisterPartial") *@
+
+                    @await Html.PartialAsync("_RegisterPartial", new project.Models.ViewModels.RegisterViewModel())
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="editProfileContent">
+
+
+                        @await Html.PartialAsync("_EditProfilePartial", new project.Models.ViewModels.EditProfileViewModel())
+
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="viewProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="editProfileContent">
+
+
+                        @await Html.PartialAsync("_ViewProfilePartial")
+
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="footer" style="margin-top: 10px; background-color: #333; color: #fff; padding: 40px 0;">
+        <!-- top footer -->
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <!-- About Us -->
+                    <div class="col-md-12 text-center">
+                        <div class="footer">
+                            <h3 class="footer-title">About Us</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+                            <ul class="footer-links list-inline">
+                                <li class="list-inline-item"><a href="#" style="color: #fff;"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                                <li class="list-inline-item"><a href="#" style="color: #fff;"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                                <li class="list-inline-item"><a href="#" style="color: #fff;"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /About Us -->
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /top footer -->
+        <!-- bottom footer -->
+        <div id="bottom-footer" class="section" style="background-color: #222; padding: 20px 0;">
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span class="copyright">
+                            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#" style="color: #fff;">Your Company</a>
+                        </span>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /bottom footer -->
+    </footer>
+    <!-- /FOOTER -->
+    <!-- Scripts -->
+    <script src="~/jquery/jquery.js"></script>
+  @*   <script src="~/jquery/jquery.min.js"></script> *@
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/slick.min.js"></script>
+    <script src="~/js/nouislider.min.js"></script>
+    <script src="~/js/jquery.zoom.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/singlepage.js"></script>
+    <!-- Custom JS for Login and Registration Modals -->
+    <script>
+        $(document).ready(function () {
+            // Automatically focus the first input field when the login modal is shown
+            $('#loginModal').on('shown.bs.modal', function () {
+                $('#loginForm input:first').trigger('focus');
+            });
+
+            // Automatically focus the first input field when the registration modal is shown
+            $('#registrationModal').on('shown.bs.modal', function () {
+                $('#registrationForm input:first').trigger('focus');
+            });
+
+            // Automatically focus the first input field when the edit profile modal is shown
+            $('#editProfileModal').on('shown.bs.modal', function () {
+                $('#editProfileForm input:first').trigger('focus');
+            });
+
+            // Optional: Reset the form when the login modal is hidden
+            $('#loginModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+            });
+
+            // Optional: Reset the form when the registration modal is hidden
+            $('#registrationModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+            });
+
+            // Optional: Reset the form when the edit profile modal is hidden
+            $('#editProfileModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+            });
+
+
+            $('#createBookModal').on('shown.bs.modal', function () {
+                $('#createBookForm input:first').trigger('focus');
+            });
+
+            // Optional: Reset the form when the login modal is hidden
+            $('#createBookModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+            });
+
+
+            $('#viewProfileModal').on('shown.bs.modal', function () {
+                $('#viewProfileForm input:first').trigger('focus');
+            });
+
+            // Optional: Reset the form when the login modal is hidden
+            $('#viewProfileModal').on('hidden.bs.modal', function () {
+                $(this).find('form')[0].reset();
+            });
+
+            console.log('@Url.Action("EditProfile", "Account")');
+
+
+            $('#editProfileModal').on('show.bs.modal', function () {
+                var modal = $(this);
+                $.ajax({
+                    url: '@Url.Action("EditProfile", "Account")',
+                    type: 'GET',
+                    success: function (data) {
+                        modal.find('#editProfileContent').html(data);
+                    },
+                    error: function () {
+                        alert("An error occurred while loading the profile data.");
+                    }
+                });
+            });
+
+            // Handle the form submission
+            $('#editProfileModal').on('submit', '#editProfileForm', function (event) {
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("EditProfile", "Account")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function () {
+                        location.reload(); // reload the page to reflect changes
+                    },
+                    error: function () {
+                        alert("An error occurred while updating the profile.");
+                    }
+                });
+            });
+
+
+
+
+
+
+        });
+
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
