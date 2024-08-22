@@ -14,8 +14,12 @@ This is a Book Management application built using ASP.NET Core MVC and .NET 8. T
 ## Admin and User Credentials
 
 - **Admin**
-  - Email: ```bash Admin@gmail.com```
-  - Password: ```bash Admin1234```
+  - Email: ```bash
+Admin@gmail.com
+```
+  - Password: ```bash 
+Admin1234
+```
 
 - **User**
   - Email: user@gmail.com
