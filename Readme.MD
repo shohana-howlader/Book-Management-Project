@@ -23,9 +23,7 @@ This is a Book Management application built using ASP.NET Core MVC and .NET 8. T
 
 ### Admin Credentials
 
-- **Email**: 
-  ```plaintext
-  Admin@gmail.com
+- **Email**:   ```plaintext  Admin@gmail.com
 
 
 ## Technologies Used
